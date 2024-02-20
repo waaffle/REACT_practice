@@ -1,20 +1,23 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import About from '../pages/About';
-import Posts from '../pages/Posts';
-import Error from '../pages/Error';
-import PostIdPage from '../pages/PostIdPage';
+import { publicRoutes, privateRoutes } from '../router/routes';
+import { AuthContext } from './UI/context';
 
 const AppRouter = () => {
+    const {isAuth, setIsAuth} = useContext(AuthContext);
     return (
-        <Routes>
-          <Route path="/about" element={<About />}/>
-          <Route exact path="/posts" element={<Posts />}/>
-          <Route exact path="/posts/:id" element={<PostIdPage />}/>
-          <Route path="/error" element={<Error />}/>
-          <Route path="*" element={<Error />}/>
+      <Routes>
+        {isAuth
+          ? privateRoutes.map(route => {
+              return <Route key={route.path} path={route.path} element={<route.component />} exact={route.exact}/>
+            })
 
-      </Routes>
+          : publicRoutes.map(route => {
+            return <Route key={route.path} path={route.path} element={<route.component />} exact={route.exact}/>
+          })
+        }
+        </Routes>
+        
     );
 };
 
